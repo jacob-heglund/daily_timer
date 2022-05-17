@@ -99,6 +99,7 @@ class WorkTimer:
 
             #TODO have some behavior that tells you when your work session is over and to start resting
             ## maybe a notification of some type?
+            #TODO I couldn't get it to work as an exe file on Windows using pyinstaller. It kept not seeing the libraries I needed for it to compile
             if prev_period is None:
                 prev_period = curr_period
 
@@ -150,4 +151,4 @@ class WorkTimer:
 #TODO turn into .exe so I can run it in a windows commandline
 if __name__ == "__main__":
     timer = WorkTimer(args)
-    input("Press any key to exit")
+    k = input("Press any key to exit")

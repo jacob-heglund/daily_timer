@@ -2,6 +2,7 @@ import argparse
 import time
 import datetime
 from plyer import notification
+from playsound import playsound
 import pdb
 
 parser = argparse.ArgumentParser(description=None)
@@ -27,8 +28,8 @@ class WorkTimer:
         self.lunch = True
 
         #TODO bring back in real time after development is done
-        # self.start_time = datetime.datetime(2022, 5, 17, 8, 30)
-        self.start_time = datetime.datetime.now()
+        self.start_time = datetime.datetime(2022, 5, 17, 8, 30)
+        # self.start_time = datetime.datetime.now()
 
         # Cut off any work sessions after the first one so I can have lunch between 11:00 - 11:59 AM
         latest_lunch_start = self.start_time.replace(hour=11, minute=59)
@@ -39,10 +40,13 @@ class WorkTimer:
         self.times = [self.start_time]
 
         self._create_plan()
-        # self.max_end_time =
+        end_times = []
+        for session in self.sessions.values():
+            for period in session.values():
+                end_times.append(period.end_time)
+        self.max_end_time = max(end_times)
         self._print_plan()
-        #TODO running the plan and having a timer + notifications is a more significant pain in the ass, but worth it so I don't have to be checking the time constantly
-        # self._run_plan()
+        self._run_plan()
 
     def _create_plan(self):
         for i in range(self.n_sessions):
@@ -70,7 +74,7 @@ class WorkTimer:
 
     def _run_plan(self):
         #TODO remove after development is done
-        curr_time = datetime.datetime(2022, 5, 17, 9, 35)
+        curr_time = datetime.datetime(2022, 5, 17, 8, 30)
         done = False
         prev_period = None
 
@@ -81,6 +85,9 @@ class WorkTimer:
 
             #TODO remove after development is done
             curr_time += datetime.timedelta(minutes=1)
+            if curr_time > self.max_end_time:
+                done = True
+                break
 
             # run a timer for each session in the commandline
             for session in self.sessions.values():
@@ -90,28 +97,30 @@ class WorkTimer:
                         remaining_time = (curr_time - period.end_time).total_seconds() / 60
                         print(f"{period.period_type.capitalize()} --- Remaining time: {abs(round(remaining_time, 0))}", end="\r")
 
-                    elif curr_time > self.max_end_time:
-                        done = True
-
             #TODO have some behavior that tells you when your work session is over and to start resting
-            ## then you could have the program run in detached mode and don't need to keep a command line open to see it
             ## maybe a notification of some type?
             if prev_period is None:
                 prev_period = curr_period
 
             if curr_period != prev_period:
                 if curr_period.period_type == "work":
-                    print("rest ended")
+                    print("\n")
+                    print("Work started")
+                    print("\n")
+                    notification.notify(title = "Work Started", timeout = 10)
                 elif curr_period.period_type == "rest":
-                    print("work ended")
+                    print("\n")
+                    print("Work ended")
+                    print("\n")
+                    playsound("resources/tatls_listen.mp3")
+                    notification.notify(title = "Work Ended", timeout = 10)
 
             prev_period = curr_period
 
             # have a sound play when the session ends
 
             ## do behaviors based on the current session
-
-            # TODO add white noise sound as an option during work sesions
+            ## TODO add white noise sound as an option during work sesions
 
             #TODO add after development is done
             time.sleep(0.1)
@@ -141,3 +150,4 @@ class WorkTimer:
 #TODO turn into .exe so I can run it in a windows commandline
 if __name__ == "__main__":
     timer = WorkTimer(args)
+    input("Press any key to exit")

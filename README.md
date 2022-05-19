@@ -8,7 +8,7 @@ Developed and tested on Windows. Some of the notifications and sounds are likely
 
 Based on [this video](https://www.youtube.com/watch?v=UZX5kH72Yx4).
 
-To generate `main.exe` run the following in `daily_timer/` using Git Bash (commands will be different using Windows commandline or Powershell):
+To generate `main.exe` run the following in `daily_timer/` using Git Bash (commands will be different using Windows Command Prompt or Powershell):
 
 ```bash
 pyinstaller --onefile main.py

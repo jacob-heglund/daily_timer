@@ -8,16 +8,22 @@ from plyer import notification
 import webbrowser
 import pdb
 
+# commandline argument parsing
 parser = argparse.ArgumentParser(description=None)
 parser.add_argument('-n', '--n_sessions', default=2, type=int, help="Number of consecutive work sessions you want to plan. Only works for n \in {1, 2} since you're probably not able to do more than two consecutive work sessions.")
 parser.add_argument('-w', '--work_length', default=90, type=int, help="Number of minutes per work session")
 parser.add_argument('-r', '--rest_length', default=20, type=int, help="Number of minutes per rest session")
 parser.add_argument('-d', '--debug_mode', default=False, type=str, choices=('True', 'False'), help="Debug mode")
-# parser.add_argument('-d', '--debug_mode', default=True, type=str, choices=('True', 'False'), help="Debug mode")
 args = parser.parse_args()
 
 nsdr_url = 'https://youtu.be/pL02HRFk2vo?t=48/'
 playlist_url = 'https://www.youtube.com/playlist?list=PLylfBmdQ1h3ZjMnIAA7_wTv9Rh8hR1r9W'
+
+
+if not args.debug_mode:
+    print("Please select number of work sessions (1 or 2)")
+    n_sessions = int(input())
+    args.n_sessions = n_sessions
 
 
 def open_nsdr_url():
